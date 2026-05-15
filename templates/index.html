@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {% if view == 'day' %}{{ pool_name }} – Today {{ day_date.strftime('%b %-d') }}
+    {% else %}{{ pool_name }} – {{ week_start.strftime('%b %-d') }}–{{ week_end.strftime('%-d, %Y') }}
+    {% endif %}
+  </title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #eef2f7;
+      color: #2d3748;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a365d;
+      color: #fff;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    header h1 { font-size: 1.1rem; font-weight: 600; }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #d0d9e4;
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      background: #2b6cb0;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .btn:hover        { background: #2c5282; }
+    .btn-today        { background: #276749; }
+    .btn-today:hover  { background: #22543d; }
+    .btn-day          { background: #6b46c1; }
+    .btn-day:hover    { background: #553c9a; }
+
+    .pool-select {
+      padding: 0.32rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e0;
+      font-size: 0.85rem;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .week-label {
+      flex: 1;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    main {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chart-wrapper {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.12);
+      overflow: auto;
+      max-width: 100%;
+    }
+    .chart-wrapper img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .note {
+      font-size: 0.78rem;
+      color: #718096;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.73rem;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏊 Seattle Parks Pools — Activity Schedule</h1>
+</header>
+
+<nav>
+  {% set pool_param = "pool=" ~ center_id %}
+  {% if view == 'day' %}
+    <a class="btn" href="/?{{ pool_param }}&week={{ today_week }}">← Week View</a>
+    <span class="week-label">Today — {{ day_date.strftime('%A, %B %-d, %Y') }}</span>
+  {% else %}
+    <a class="btn" href="/?{{ pool_param }}&week={{ prev_week }}">← Previous</a>
+    {% if week_start.isoformat() != today_week %}
+    <a class="btn btn-today" href="/?{{ pool_param }}&week={{ today_week }}">This Week</a>
+    {% endif %}
+    <span class="week-label">
+      Week of {{ week_start.strftime('%B %-d') }}–{{ week_end.strftime('%-d, %Y') }}
+    </span>
+    <a class="btn" href="/?{{ pool_param }}&week={{ next_week }}">Next →</a>
+    <a class="btn btn-day" href="/today?{{ pool_param }}">Today's View</a>
+  {% endif %}
+
+  <form method="get" action="{{ '/today' if view == 'day' else '/' }}" style="display:inline">
+    {% if view == 'week' %}
+    <input type="hidden" name="week" value="{{ week_start.isoformat() }}">
+    {% endif %}
+    <select name="pool" class="pool-select" onchange="this.form.submit()">
+      {% for c in centers %}
+      <option value="{{ c.id }}" {% if c.id == center_id %}selected{% endif %}>
+        {{ c.name }}
+      </option>
+      {% endfor %}
+    </select>
+  </form>
+</nav>
+
+<main>
+  <div class="chart-wrapper">
+    <img src="data:image/png;base64,{{ img_b64 }}"
+         alt="{{ pool_name }} activity schedule">
+  </div>
+  <p class="note">
+    Data from Seattle Parks &amp; Recreation via ActiveNet ·
+    Cached 1 hour · Verify times at the facility before visiting.
+  </p>
+</main>
+
+<footer>Seattle Parks Pool Schedule · ActiveNet</footer>
+
+</body>
+</html>
