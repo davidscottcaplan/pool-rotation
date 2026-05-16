@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool Schedule — Find a Pool</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #eef2f7;
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 520px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 1.75rem;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 0.4rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus { border-color: #2b6cb0; }
+    .examples {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      margin-top: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #2b6cb0;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:hover { background: #2c5282; }
+    .error {
+      background: #fff5f5;
+      border: 1px solid #fc8181;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      color: #c53030;
+      margin-bottom: 1.25rem;
+    }
+    .known-sites {
+      margin-top: 1.75rem;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1.25rem;
+    }
+    .known-sites p {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.6rem;
+    }
+    .site-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .chip {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      background: #ebf4ff;
+      color: #2b6cb0;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .chip:hover { background: #bee3f8; }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: #a0aec0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🏊 Pool Activity Schedule</h1>
+  <p class="subtitle">Enter any ActiveNet pool URL or site name to view its schedule.</p>
+
+  {% if error %}
+  <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form action="/find" method="post">
+    <label for="site">ActiveNet URL or site name</label>
+    <input type="text" id="site" name="site"
+           placeholder="e.g. seattle  or  apm.activecommunities.com/sfrecpark"
+           value="{{ prefill or '' }}"
+           autofocus>
+    <p class="examples">
+      Examples: &nbsp;<code>seattle</code> &nbsp;·&nbsp;
+      <code>sfrecpark</code> &nbsp;·&nbsp;
+      <code>apm.activecommunities.com/planoparksandrec</code>
+    </p>
+    <button type="submit">Find Pools →</button>
+  </form>
+
+  <div class="known-sites">
+    <p>Quick start</p>
+    <div class="site-chips">
+      <a class="chip" href="/find?site=seattle">Seattle Parks</a>
+      <a class="chip" href="/find?site=sfrecpark">SF Rec &amp; Parks</a>
+      <a class="chip" href="/find?site=portlandparks">Portland Parks</a>
+      <a class="chip" href="/find?site=dprplaymore">DC Parks</a>
+      <a class="chip" href="/find?site=planoparksandrec">Plano TX</a>
+    </div>
+  </div>
+</div>
+
+<footer>Powered by ActiveNet public calendar data · Results cached 1 hour</footer>
+
+</body>
+</html>

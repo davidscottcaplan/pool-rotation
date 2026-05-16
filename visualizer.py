@@ -57,8 +57,7 @@ def _legend_patches() -> list:
 
 
 def create_weekly_image(
-    schedule: dict[int, list[dict]],
-    center_id: int,
+    events: list[dict],
     pool_name: str,
     week_start: date,
 ) -> bytes:
@@ -74,12 +73,10 @@ def create_weekly_image(
     fig.text(0.5, 0.99, f"{pool_name} — Activity Schedule",
              ha="center", va="top", fontsize=13, fontweight="bold")
 
-    all_events = schedule.get(center_id, [])
-
     for day_idx in range(7):
         ax  = axes[day_idx]
         day = (week_start + timedelta(days=day_idx)).isoformat()
-        day_evs = [e for e in all_events if e["date"] == day]
+        day_evs = [e for e in events if e["date"] == day]
         grid = _build_day_grid(day_evs).reshape(-1, 1)
 
         ax.pcolormesh(grid, cmap=_CMAP, norm=_NORM,
