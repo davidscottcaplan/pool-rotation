@@ -92,6 +92,12 @@ def create_weekly_image(
             spine.set_linewidth(0.5)
             spine.set_color("#aaaaaa")
 
+        if not day_evs:
+            ax.text(0.5, N_SLOTS / 2, "CLOSED",
+                    ha="center", va="center", fontsize=7.5,
+                    color="#888888", fontweight="bold",
+                    rotation=90, transform=ax.transData)
+
     ax0 = axes[0]
     hour_ticks = list(range(0, N_SLOTS + 1, 2))
     ax0.set_yticks(hour_ticks)
@@ -151,6 +157,12 @@ def create_day_image(
         ax.text(0.5, (s0 + s1) / 2, label,
                 ha="center", va="center", fontsize=fontsize,
                 color="#222222", clip_on=True)
+
+    # All-day closed overlay
+    if not day_evs:
+        ax.text(0.5, N_SLOTS / 2, "CLOSED", ha="center", va="center",
+                fontsize=28, color="#999999", fontweight="bold", alpha=0.55,
+                transform=ax.transData)
 
     # NOW marker
     if now_minutes is not None and DISPLAY_START_MIN <= now_minutes <= DISPLAY_END_MIN:
